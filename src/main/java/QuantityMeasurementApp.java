@@ -3,8 +3,10 @@ import java.util.Objects;
 public class QuantityMeasurementApp {
 
     public enum LengthUnit {
+        YARDS(36.0),
         FEET(12.0),
-        INCH(1.0);
+        INCH(1.0),
+        CENTIMETERS(0.393701);
 
         private final double conversionToInches;
 
@@ -72,16 +74,29 @@ public class QuantityMeasurementApp {
     }
 
     public static void main(String[] args) {
-        QuantityLength val1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength val2 = new QuantityLength(12.0, LengthUnit.INCH);
-        
+        QuantityLength val1 = new QuantityLength(1.0, LengthUnit.YARDS);
+        QuantityLength val2 = new QuantityLength(3.0, LengthUnit.FEET);
         System.out.println("Input: " + val1 + " and " + val2);
-        System.out.println("Output: Equal (" + val1.equals(val2) + ")");
+        System.out.println("Output: Equal (" + val1.equals(val2) + ")\n");
         
-        QuantityLength val3 = new QuantityLength(1.0, LengthUnit.INCH);
-        QuantityLength val4 = new QuantityLength(1.0, LengthUnit.INCH);
-        
+        QuantityLength val3 = new QuantityLength(1.0, LengthUnit.YARDS);
+        QuantityLength val4 = new QuantityLength(36.0, LengthUnit.INCH);
         System.out.println("Input: " + val3 + " and " + val4);
-        System.out.println("Output: Equal (" + val3.equals(val4) + ")");
+        System.out.println("Output: Equal (" + val3.equals(val4) + ")\n");
+
+        QuantityLength val5 = new QuantityLength(2.0, LengthUnit.YARDS);
+        QuantityLength val6 = new QuantityLength(2.0, LengthUnit.YARDS);
+        System.out.println("Input: " + val5 + " and " + val6);
+        System.out.println("Output: Equal (" + val5.equals(val6) + ")\n");
+
+        QuantityLength val7 = new QuantityLength(2.0, LengthUnit.CENTIMETERS);
+        QuantityLength val8 = new QuantityLength(2.0, LengthUnit.CENTIMETERS);
+        System.out.println("Input: " + val7 + " and " + val8);
+        System.out.println("Output: Equal (" + val7.equals(val8) + ")\n");
+
+        QuantityLength val9 = new QuantityLength(1.0, LengthUnit.CENTIMETERS);
+        QuantityLength val10 = new QuantityLength(0.393701, LengthUnit.INCH);
+        System.out.println("Input: " + val9 + " and " + val10);
+        System.out.println("Output: Equal (" + val9.equals(val10) + ")");
     }
 }
