@@ -2,65 +2,86 @@ import java.util.Objects;
 
 public class QuantityMeasurementApp {
 
-    public static class Feet {
-        private final double value;
+    public enum LengthUnit {
+        FEET(12.0),
+        INCH(1.0);
 
-        public Feet(double value) {
-            this.value = value;
+        private final double conversionToInches;
+
+        LengthUnit(double conversionToInches) {
+            this.conversionToInches = conversionToInches;
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Feet feet = (Feet) obj;
-            return Double.compare(feet.value, value) == 0;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
+        public double getConversionToInches() {
+            return this.conversionToInches;
         }
     }
 
-    public static class Inches {
+    public static class QuantityLength {
         private final double value;
+        private final LengthUnit unit;
 
-        public Inches(double value) {
+        public QuantityLength(double value, LengthUnit unit) {
+            if (unit == null) {
+                throw new IllegalArgumentException("Unit cannot be null");
+            }
             this.value = value;
+            this.unit = unit;
         }
 
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Inches inches = (Inches) obj;
-            return Double.compare(inches.value, value) == 0;
+            if (!(obj instanceof QuantityLength)) return false;
+            QuantityLength that = (QuantityLength) obj;
+            double thisInches = this.value * this.unit.getConversionToInches();
+            double thatInches = that.value * that.unit.getConversionToInches();
+            return Double.compare(thisInches, thatInches) == 0;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(value);
+            return Objects.hash(value * unit.getConversionToInches());
+        }
+
+        @Override
+        public String toString() {
+            return "Quantity(" + value + ", \"" + unit.name().toLowerCase() + "\")";
+        }
+    }
+
+    // Kept for backward compatibility with UC1 and UC2 tests
+    public static class Feet extends QuantityLength {
+        public Feet(double value) {
+            super(value, LengthUnit.FEET);
+        }
+    }
+
+    public static class Inches extends QuantityLength {
+        public Inches(double value) {
+            super(value, LengthUnit.INCH);
         }
     }
 
     public static boolean checkFeetEquality(double val1, double val2) {
-        Feet feet1 = new Feet(val1);
-        Feet feet2 = new Feet(val2);
-        return feet1.equals(feet2);
+        return new Feet(val1).equals(new Feet(val2));
     }
 
     public static boolean checkInchesEquality(double val1, double val2) {
-        Inches inches1 = new Inches(val1);
-        Inches inches2 = new Inches(val2);
-        return inches1.equals(inches2);
+        return new Inches(val1).equals(new Inches(val2));
     }
 
     public static void main(String[] args) {
-        System.out.println("Input: 1.0 inch and 1.0 inch");
-        System.out.println("Output: Equal (" + checkInchesEquality(1.0, 1.0) + ")");
-
-        System.out.println("Input: 1.0 ft and 1.0 ft");
-        System.out.println("Output: Equal (" + checkFeetEquality(1.0, 1.0) + ")");
+        QuantityLength val1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength val2 = new QuantityLength(12.0, LengthUnit.INCH);
+        
+        System.out.println("Input: " + val1 + " and " + val2);
+        System.out.println("Output: Equal (" + val1.equals(val2) + ")");
+        
+        QuantityLength val3 = new QuantityLength(1.0, LengthUnit.INCH);
+        QuantityLength val4 = new QuantityLength(1.0, LengthUnit.INCH);
+        
+        System.out.println("Input: " + val3 + " and " + val4);
+        System.out.println("Output: Equal (" + val3.equals(val4) + ")");
     }
 }
